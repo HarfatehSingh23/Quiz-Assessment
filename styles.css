@@ -1,0 +1,61 @@
+/* Basic styling for the page */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+/* Main container for the quiz */
+#quiz-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+}
+
+/* Heading styles */
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Progress bar styling */
+#progress-bar {
+    width: 0%;
+    height: 10px;
+    background-color: #4caf50;
+    margin-bottom: 20px;
+}
+
+/* Styling for correct and incorrect answers */
+.correct {
+    background-color: #c8e6c9;
+}
+
+.incorrect {
+    background-color: #ffcdd2;
+}
+
+/* Feedback section styling */
+#feedback {
+    margin: 20px 0;
+    font-size: 16px;
+}
+
+/* Final score styling */
+#score {
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+/* Button styling */
+#start-button, #next-button, #reset-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}

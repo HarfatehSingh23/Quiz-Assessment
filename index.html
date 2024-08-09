@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Rookie Quiz</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="quiz-container">
+        <h1>The Rookie Quiz</h1>
+
+        <!-- Start button container -->
+        <div id="start-container">
+            <button id="start-button" onclick="startQuiz()">Start Quiz</button>
+        </div>
+
+        <!-- Progress bar container, hidden initially -->
+        <div id="progress-container" style="display: none;">
+            <div id="progress-bar"></div>
+        </div>
+
+        <!-- Question container, hidden initially -->
+        <div id="question-container" style="display: none;"></div>
+
+        <!-- Next button to move to the next question, hidden initially -->
+        <button id="next-button" onclick="nextQuestion()" style="display: none;">Next</button>
+
+        <!-- Reset button to restart the quiz, hidden initially -->
+        <button id="reset-button" onclick="resetQuiz()" style="display: none;">Reset Quiz</button>
+
+        <!-- Feedback section to show if the answer was correct or not -->
+        <div id="feedback"></div>
+
+        <!-- Score section to show the final score -->
+        <div id="score"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
