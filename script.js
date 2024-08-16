@@ -47,6 +47,7 @@ const questions = [
 // Variables to keep track of current question index and score
 let currentQuestionIndex = 0;
 let score = 0;
+const passMark = Math.ceil(questions.length / 2);
 
 // Function to update the progress bar
 function updateProgressBar() {
@@ -59,83 +60,67 @@ function updateProgressBar() {
 function showQuestion() {
     const questionContainer = document.getElementById('question-container');
     const currentQuestion = questions[currentQuestionIndex];
-    let optionsHtml = '';
 
-    // Loop through options to create radio buttons
-    currentQuestion.options.forEach(option => {
-        optionsHtml += `<div>
-                            <input type="radio" name="option" value="${option}">
-                            <label>${option}</label>
-                        </div>`;
-    });
-
-    // Display the question and its options
-    questionContainer.innerHTML = `<h2>${currentQuestion.question}</h2>${optionsHtml}`;
+    questionContainer.innerHTML = `<h2>${currentQuestion.question}</h2>`;
+    questionContainer.innerHTML += createOptionsHtml(currentQuestion.options);
     updateProgressBar();
+}
+
+// Function to create HTML for options
+function createOptionsHtml(options) {
+    return options.map(option => `
+        <div>
+            <input type="radio" name="option" value="${option}">
+            <label>${option}</label>
+        </div>
+    `).join('');
+}
+
+// Function to handle feedback display
+function displayFeedback(isCorrect, feedback) {
+    const feedbackDiv = document.getElementById('feedback');
+    feedbackDiv.textContent = isCorrect ? "Correct! " + feedback : `Wrong! ${feedback}`;
+    feedbackDiv.className = isCorrect ? 'feedback correct' : 'feedback incorrect';
 }
 
 // Function to move to the next question
 function nextQuestion() {
+    const nextButton = document.getElementById('next-button');
+    nextButton.disabled = true; // Disable the button
+
     const selectedOption = document.querySelector('input[name="option"]:checked');
     const feedbackDiv = document.getElementById('feedback');
 
     // Ensure the user has selected an option
     if (!selectedOption) {
         alert('Please select an option!');
+        nextButton.disabled = false; // Re-enable the button if no option selected
         return;
     }
 
     const selectedAnswer = selectedOption.value;
     const currentQuestion = questions[currentQuestionIndex];
+    const isCorrect = selectedAnswer === currentQuestion.answer;
 
-    // Check if the selected answer is correct and provide feedback
-    if (selectedAnswer === currentQuestion.answer) {
+    if (isCorrect) {
         score++;
-        selectedOption.parentElement.classList.add('correct');
-        feedbackDiv.textContent = "Correct! " + currentQuestion.feedback;
-        feedbackDiv.style.color = "green";
-    } else {
-        selectedOption.parentElement.classList.add('incorrect');
-        feedbackDiv.textContent = `Wrong! ${currentQuestion.feedback}`;
-        feedbackDiv.style.color = "red";
-    }
-}
-
-function nextQuestion() {
-    const selectedOption = document.querySelector('input[name="option"]:checked');
-    const feedbackDiv = document.getElementById('feedback');
-
-    // Ensure the user has selected an option
-    if (!selectedOption) {
-        alert('Please select an option!');
-        return;
     }
 
-    const selectedAnswer = selectedOption.value;
-    const currentQuestion = questions[currentQuestionIndex];
-
-    // Check if the selected answer is correct and provide feedback
-    if (selectedAnswer === currentQuestion.answer) {
-        score++;
-        selectedOption.parentElement.classList.add('correct');
-        feedbackDiv.textContent = "Correct! " + currentQuestion.feedback;
-        feedbackDiv.style.color = "green";
-    } else {
-        selectedOption.parentElement.classList.add('incorrect');
-        feedbackDiv.textContent = `Wrong! ${currentQuestion.feedback}`;
-        feedbackDiv.style.color = "red";
-    }
-
-    // Move to the next question or show results if it's the last question
+    // Display feedback and move to the next question or show results if it's the last question
+    displayFeedback(isCorrect, currentQuestion.feedback || "No additional feedback available.");
     currentQuestionIndex++;
+
     if (currentQuestionIndex < questions.length) {
-        // Clear previous selections and feedback
-        document.querySelectorAll('input[name="option"]').forEach(input => input.checked = false);
-        feedbackDiv.textContent = '';
-        // Update question display
-        showQuestion();
+        setTimeout(() => {
+            feedbackDiv.textContent = ''; // Clear feedback
+            showQuestion();
+            nextButton.disabled = false; // Re-enable the button after question is shown
+        }, 1000);
     } else {
-        showResults(); // Show results if it's the last question
+        setTimeout(() => {
+            showResults(); // Show results after feedback
+            nextButton.disabled = false; // Re-enable the button for reset
+        }, 1000);
     }
 }
 
@@ -143,7 +128,7 @@ function nextQuestion() {
 // Function to display the final results
 function showResults() {
     const scoreDiv = document.getElementById('score');
-    const passMark = Math.ceil(questions.length / 2); // Determine the pass mark
+    const feedbackDiv = document.getElementById('feedback');
     const passed = score >= passMark;
 
     // Hide the question container and next button, show the reset button
@@ -151,12 +136,14 @@ function showResults() {
     document.getElementById('next-button').style.display = 'none';
     document.getElementById('reset-button').style.display = 'block';
 
+    // Clear the feedback
+    feedbackDiv.textContent = '';
+
     // Display the user's score and whether they passed
     scoreDiv.textContent = `You scored ${score} out of ${questions.length}. You ${passed ? 'passed!' : 'did not pass. Try again!'}`;
-    scoreDiv.style.fontSize = "24px";
-    scoreDiv.style.fontWeight = "bold";
-    scoreDiv.style.color = passed ? "green" : "red";
+    scoreDiv.className = passed ? 'result passed' : 'result failed';
 }
+
 
 // Function to reset the quiz
 function resetQuiz() {
@@ -179,7 +166,7 @@ function startQuiz() {
     showQuestion(); // Display the first question
 }
 
-// Ensure the start button is focused when the page loads
-window.onload = function() {
+// Event listener to start the quiz when the page loads
+window.addEventListener('load', () => {
     document.getElementById('start-button').focus();
-};
+});
